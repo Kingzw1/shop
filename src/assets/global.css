@@ -1,0 +1,20 @@
+/* src/assets/global.css */
+body {
+    font-family: Arial, sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+    padding: 0;
+}
+html,
+body,
+#app {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
