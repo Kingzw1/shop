@@ -9,7 +9,7 @@
         class="demo-dynamic"
       >
         <el-form-item
-          prop="useName"
+          prop="username"
           label="用户名"
           :rules="[
             {
@@ -24,7 +24,7 @@
             },
           ]"
         >
-          <el-input type="text" v-model="LoginData.useName" />
+          <el-input type="text" v-model="LoginData.username" />
         </el-form-item>
         <el-form-item
           prop="password"
@@ -45,19 +45,29 @@
           <el-input type="password" v-model="LoginData.password" />
         </el-form-item>
       </el-form>
-      <el-button type="primary" class="login_but">登录</el-button>
+      <el-button type="primary" class="login_but" @click="ButLogin"
+        >登录</el-button
+      >
     </div>
   </div>
 </template>
 
 <script setup>
 import { reactive, ref } from "vue";
-
+import { useRouter } from "vue-router";
+import { useLogin } from "../stores/UserLogin";
+const LoginStore = useLogin();
+const router = useRouter();
 const formRef = ref();
 const LoginData = reactive({
-  useName: "",
+  username: "",
   password: "",
 });
+async function ButLogin() {
+  console.log("%%%", router);
+  await LoginStore.UserLogin(LoginData);
+  router.push("/");
+}
 </script>
 
 <style scoped>

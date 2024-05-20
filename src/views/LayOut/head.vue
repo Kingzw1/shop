@@ -1,7 +1,7 @@
 <template>
   <div class="head">
     <div class="logo">
-      <img src="../assets//images/logo.jpg" alt="" />
+      <img src="../../assets/images/logo.jpg" alt="" />
       <h3>管理系统</h3>
     </div>
     <div class="but">

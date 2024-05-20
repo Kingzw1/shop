@@ -6,18 +6,17 @@
     <div class="main">
       <div class="side"><side></side></div>
       <div class="min">
-        <MainComponent>
-          <router-view></router-view>
-        </MainComponent>
+        <RouterView />
+        <!-- <MainComponent> </MainComponent> -->
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import HeadComponent from "@/views/head.vue";
-import side from "@/views/side.vue";
-import MainComponent from "@/views/main.vue";
+import HeadComponent from "@/views/LayOut/head.vue";
+import side from "@/views/LayOut/side.vue";
+import MainComponent from "@/views/LayOut/main.vue";
 </script>
 
 <style scoped>
