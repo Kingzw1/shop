@@ -42,10 +42,19 @@ const router = createRouter({
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   // ...
-//   // 返回 false 以取消导航
-//   // return true;
-//   next();
-// });
+router.beforeEach((to, from, next) => {
+  // ...
+  // 返回 false 以取消导航
+  // return true;
+  const LoginList = JSON.parse(localStorage.getItem("LoginList"));
+  // console.log(LoginList.data.token);
+  if (to.name !== "login" && !LoginList?.data.token) {
+    // 如果访问的不是登录页面且没有 token，则跳转到登录页面
+    next({ path: "/login" });
+    // next();
+  } else {
+    // 其他情况下，允许访问
+    next();
+  }
+});
 export default router;
