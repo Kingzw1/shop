@@ -11,3 +11,12 @@ export const userList = (data) => {
     },
   });
 };
+
+// 添加用户列表信息
+export const addUserListApi = (data) => {
+  return service({
+    method: "post",
+    url: "/users",
+    data,
+  });
+};

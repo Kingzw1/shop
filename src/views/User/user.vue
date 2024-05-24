@@ -58,12 +58,58 @@
         </el-table>
       </div>
     </div>
+    <el-dialog v-model="dialogFormVisible" title="新建用户" width="500">
+      <!-- 参数名	参数说明	备注
+        username	用户名称	不能为空
+        password	用户密码	不能为空
+        email	邮箱	可以为空
+        mobile	手机号	可以为空 -->
+      <el-form
+        :model="addFormData"
+        :rules="rules"
+        label-width="auto"
+        ref="ruleFormRef"
+      >
+        <el-form-item label="用户名称" prop="username">
+          <el-input
+            v-model="addFormData.username"
+            placeholder="请输入用户名称"
+          />
+        </el-form-item>
+        <el-form-item label="用户密码" prop="password">
+          <el-input
+            v-model="addFormData.password"
+            placeholder="请输入用户密码"
+            type="password"
+          />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input
+            v-model="addFormData.email"
+            placeholder="请输入电子邮箱"
+            type="email"
+          />
+        </el-form-item>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="addFormData.mobile" placeholder="请输入手机号码" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="addUserList(ruleFormRef)">
+            确定
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useUserList } from "@/stores/UserList.js";
+import { addUserListApi } from "@/api/UserList";
 const userList = useUserList();
 const userData = ref({
   keyWord: "",
@@ -73,9 +119,44 @@ const userData = ref({
     pagesize: 5,
   },
 });
+const dialogFormVisible = ref(false);
+const addFormData = ref({
+  username: "",
+  password: "",
+  email: "",
+  mobile: "",
+});
+const rules = ref({
+  username: [{ required: true, message: "请输入用户名", trigger: "blur" }, {}],
+  password: [
+    { required: true, message: "请输入密码", trigger: "blur" },
+    {
+      min: 6,
+      max: 18,
+      message: "密码长度应在 6 到 18 个字符之间",
+      trigger: "blur",
+    },
+  ],
+  email: [
+    { type: "email", message: "请输入正确的邮件格式", trigger: "change" },
+  ],
+  mobile: [
+    {
+      validator: (rule, value, callback) => {
+        if (value === "") {
+          callback(); // 输入为空时，不进行任何验证
+        } else if (!/^(?:(?:\+|00)86)?1[3-9]\d{9}$/.test(value)) {
+          callback(new Error("请输入正确的电话号码"));
+        } else {
+          callback();
+        }
+      },
+      trigger: "blur",
+    },
+  ],
+});
 onMounted(async () => {
   await userList.getUserList(userData.value.searchParams);
-  console.log(userList.userListStore.data.users);
 });
 const searchUser = async () => {
   await userList.getUserList(userData.searchParams);
@@ -83,7 +164,30 @@ const searchUser = async () => {
 const userListViews = computed(() => {
   return userList.userListStore.data?.users || [];
 });
-const addUser = () => {};
+const addUser = () => {
+  dialogFormVisible.value = true;
+};
+const ruleFormRef = ref();
+const addUserList = async (ruleFormRef) => {
+  if (!ruleFormRef) return;
+  await ruleFormRef.validate(async (valid, fields) => {
+    if (valid) {
+      try {
+        await addUserListApi(addFormData.value);
+        await userList.getUserList(userData.value.searchParams);
+        ElMessage({
+          message: "添加成功",
+          type: "success",
+        });
+        dialogFormVisible.value = false;
+      } catch (error) {
+        console.log("添加用户失败", error);
+      }
+    } else {
+      console.log("error submit!", fields);
+    }
+  });
+};
 </script>
 
 <style scoped>
@@ -112,6 +216,6 @@ const addUser = () => {};
   overflow-y: auto;
 }
 ::v-deep .el-table_1_column_6 > .cell {
-  text-align: center; /* 使用 !important 来确保优先级最高 */
+  text-align: center !important; /* 使用 !important 来确保优先级最高 */
 }
 </style>

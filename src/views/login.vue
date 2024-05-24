@@ -39,16 +39,6 @@ const rules = {
       message: "用户名长度应在 3 到 12 个字符之间",
       trigger: "blur",
     },
-    {
-      validator: (rule, value, callback) => {
-        if (!/^[a-zA-Z]+$/.test(value)) {
-          callback(new Error("用户名只能包含字母"));
-        } else {
-          callback();
-        }
-      },
-      trigger: "blur",
-    },
   ],
   password: [
     { required: true, message: "请输入密码", trigger: "blur" },
