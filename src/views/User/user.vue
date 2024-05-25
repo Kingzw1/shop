@@ -46,18 +46,24 @@
                   --el-switch-on-color: #13ce66;
                   --el-switch-off-color: #ff4949;
                 "
+                @click="UserState(scope.row.id, scope.row.mg_state)"
               />
             </template>
           </el-table-column>
           <el-table-column label="操作" id="center">
             <template #default="scope">
-              <el-button type="primary">编辑</el-button>
-              <el-button type="danger">删除</el-button>
+              <el-button type="primary" @click="setUser(scope.row.id)"
+                >编辑</el-button
+              >
+              <el-button type="danger" @click="deleteUser(scope.row.id)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
       </div>
     </div>
+    <!-- 新建用户 -->
     <el-dialog v-model="dialogFormVisible" title="新建用户" width="500">
       <!-- 参数名	参数说明	备注
         username	用户名称	不能为空
@@ -90,7 +96,7 @@
             type="email"
           />
         </el-form-item>
-        <el-form-item label="手机号" prop="mobile">
+        <el-form-item type="number" label="手机号" prop="mobile">
           <el-input v-model="addFormData.mobile" placeholder="请输入手机号码" />
         </el-form-item>
       </el-form>
@@ -103,13 +109,43 @@
         </div>
       </template>
     </el-dialog>
+    <!-- 编辑 -->
+    <el-dialog v-model="visible" title="修改用户" width="600px">
+      <el-form :model="setUserOne" :rules="rules" label-width="auto">
+        <el-form-item label="邮箱" prop="email">
+          <el-input
+            v-model="setUserOne.email"
+            placeholder="请输入电子邮箱"
+            type="email"
+          />
+        </el-form-item>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input
+            type="number"
+            v-model="setUserOne.mobile"
+            placeholder="请输入手机号码"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="visible = false">取消</el-button>
+          <el-button type="primary" @click="confirmDialog">确定</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, ref } from "vue";
 import { useUserList } from "@/stores/UserList.js";
-import { addUserListApi } from "@/api/UserList";
+import {
+  addUserListApi,
+  UserTypeApi,
+  UserSetListApi,
+  deleteUserApi,
+} from "@/api/UserList";
 const userList = useUserList();
 const userData = ref({
   keyWord: "",
@@ -155,6 +191,7 @@ const rules = ref({
     },
   ],
 });
+
 onMounted(async () => {
   await userList.getUserList(userData.value.searchParams);
 });
@@ -187,6 +224,46 @@ const addUserList = async (ruleFormRef) => {
       console.log("error submit!", fields);
     }
   });
+};
+// 用户编辑
+const visible = ref(false);
+const setUserOne = ref({
+  id: "",
+  email: "",
+  mobile: "",
+});
+const setUser = (id) => {
+  visible.value = true;
+  const rus = userListViews.value.filter((item) => item.id == id);
+  setUserOne.value.email = rus[0].email;
+  setUserOne.value.mobile = rus[0].mobile;
+  setUserOne.value.id = id;
+};
+const confirmDialog = async () => {
+  try {
+    await UserSetListApi(setUserOne.value);
+    await userList.getUserList(userData.value.searchParams);
+  } catch (error) {
+    console.log("error submit!", fields);
+  }
+  visible.value = false;
+};
+// 用户转态管理
+const UserState = async (id, state) => {
+  try {
+    await UserTypeApi(id, state);
+  } catch (error) {
+    console.log("error submit!", fields);
+  }
+};
+// 删除用户信息
+const deleteUser = async (id) => {
+  try {
+    await deleteUserApi(id);
+    await userList.getUserList(userData.value.searchParams);
+  } catch (error) {
+    console.log("error submit!", fields);
+  }
 };
 </script>
 

@@ -7,6 +7,7 @@ export const useUserList = defineStore("UserList", () => {
     try {
       const res = await userList(userData);
       userListStore.value = res.data;
+      console.log(userListStore);
     } catch (error) {
       console.error("Failed to fetch user list:", error);
     }

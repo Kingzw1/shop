@@ -13,6 +13,7 @@ service.interceptors.request.use(
   function (config) {
     // Do something before request is sent
     nProgress.start();
+
     return config;
   },
   function (error) {
@@ -33,6 +34,14 @@ service.interceptors.response.use(
         showClose: true,
         message: response.data.meta.msg || "服务器出错",
         type: "error",
+      });
+    }
+    if (response.data.data) {
+      // 请求出错
+      ElMessage({
+        showClose: true,
+        message: response.data.meta.msg,
+        type: "success",
       });
     }
     return response;
