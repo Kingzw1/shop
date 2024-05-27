@@ -32,18 +32,38 @@
       <el-menu-item index="1-1" @click="UserRole">角色列表</el-menu-item>
     </el-sub-menu>
   </el-menu>
+  <el-menu
+    default-active="2"
+    class="el-menu-vertical-demo"
+    @open="handleOpen"
+    @close="handleClose"
+    background-color="#ffffff"
+  >
+    <el-sub-menu index="1">
+      <template #title>
+        <el-icon><Goods /></el-icon>
+        <span>商品管理</span>
+      </template>
+
+      <el-menu-item index="1-1" @click="goods">商品列表</el-menu-item>
+    </el-sub-menu>
+  </el-menu>
 </template>
 
 <script setup>
-import router from "@/router";
+import { useRouter } from "vue-router";
+const router = useRouter();
 function user() {
-  router.push("user");
+  router.push({ name: "user" });
 }
 function toHome() {
-  router.push("main");
+  router.push({ name: "main" });
 }
 function UserRole() {
-  router.push("role");
+  router.push({ name: "role" });
+}
+function goods() {
+  router.push("goods");
 }
 </script>
 

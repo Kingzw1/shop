@@ -26,6 +26,11 @@ const router = createRouter({
           name: "role",
           component: () => import("../views/User/role.vue"),
         },
+        {
+          path: "goods",
+          name: "goods",
+          component: () => import("../views/User/goods.vue"),
+        },
       ],
     },
     // 登录页

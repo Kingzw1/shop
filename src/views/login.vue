@@ -66,10 +66,8 @@ const ButLogin = async (formEl) => {
       try {
         await LoginStore.UserLogin(LoginData);
         if (LoginStore.LoginList.meta.status == 200) {
-          alert(LoginStore.LoginList.meta.msg);
           router.push("/");
         } else {
-          alert(LoginStore.LoginList.meta.msg);
         }
       } catch (error) {
         alert(LoginStore.LoginList.meta.msg);

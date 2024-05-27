@@ -5,8 +5,6 @@
       <el-breadcrumb :separator-icon="ArrowRight">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>账号列表</el-breadcrumb-item>
-        <el-breadcrumb-item>promotion list</el-breadcrumb-item>
-        <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <!-- 内容区域 -->
@@ -273,7 +271,8 @@ const deleteUser = async (id) => {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+  max-height: calc(100vh - 74px); /* 根据需要调整高度 */
+  overflow-y: auto;
   padding: 20px;
 }
 .pages {
